@@ -1,31 +1,47 @@
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import CardPizza from "./CardPizza";
 
 const Home = () => {
+  const [pizzas, setPizzas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPizzas = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/pizzas");
+        if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
+        const data = await res.json();
+        setPizzas(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPizzas();
+  }, []);
+
+  if (loading) return <p className="text-center mt-5">Cargando pizzas...</p>;
+  if (error)
+    return <p className="text-center mt-5 text-danger">Error: {error}</p>;
+
   return (
     <>
       <Header />
-
-      <main className="container-fluid my-4 d-flex justify-content-center">
+      <main className="container-fluid my-4 px-4">
         <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-          <CardPizza
-            name="Napolitana"
-            price={5950}
-            ingredients={["mozzarella", "tomates", "jamón", "orégano"]}
-            img="https://firebasestorage.googleapis.com/v0/b/apis-varias-mias.appspot.com/o/pizzeria%2Fpizza-1239077_640_cl.jpg?alt=media&token=6a9a33da-5c00-49d4-9080-784dcc87ec2c"
-          />
-          <CardPizza
-            name="Española"
-            price={6950}
-            ingredients={["mozzarella", "gorgonzola", "parmesano", "provolone"]}
-            img="https://firebasestorage.googleapis.com/v0/b/apis-varias-mias.appspot.com/o/pizzeria%2Fcheese-164872_640_com.jpg?alt=media&token=18b2b821-4d0d-43f2-a1c6-8c57bc388fab"
-          />
-          <CardPizza
-            name="Pepperoni"
-            price={6950}
-            ingredients={["mozzarella", "pepperoni", "orégano"]}
-            img="https://firebasestorage.googleapis.com/v0/b/apis-varias-mias.appspot.com/o/pizzeria%2Fpizza-1239077_640_com.jpg?alt=media&token=e7cde87a-08d5-4040-ac54-90f6c31eb3e3"
-          />
+          {pizzas.map((p) => (
+            <CardPizza
+              key={p.id}
+              id={p.id}
+              name={p.name}
+              price={p.price}
+              ingredients={p.ingredients}
+              img={p.img}
+            />
+          ))}
         </div>
       </main>
     </>
