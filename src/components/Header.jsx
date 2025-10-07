@@ -1,6 +1,6 @@
 const Header = () => {
   const styles = {
-    backgroundImage: 'url("/bg-header.jpg")', // pon la imagen del apoyo hito 1 en /public
+    backgroundImage: 'url("/bg-header.jpg")',
     backgroundSize: "cover",
     backgroundPosition: "center",
     minHeight: "240px",
