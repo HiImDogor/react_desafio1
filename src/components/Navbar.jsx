@@ -1,22 +1,21 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import { formatCLP } from "../utils/format";
 
 const Navbar = () => {
-  const total = 25000;
-  const token = false; // cambiar a true para ver el otro estado
+  const { total } = useCart();
+  const token = false; // lo dejarás para Hito 5
 
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark bg-dark w-100"
-      style={{ minHeight: "70px" }}
+      style={{ minHeight: "70px", padding: "0.5rem 1rem" }}
     >
       <div className="container-fluid">
-        {/* Brand */}
         <Link className="navbar-brand fw-bold fs-4" to="/">
           🍕 Pizzería Mamma Mía
         </Link>
 
-        {/* Botón hamburguesa solo para móvil */}
         <button
           className="navbar-toggler"
           type="button"
@@ -29,9 +28,7 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Contenido del navbar */}
         <div className="collapse navbar-collapse" id="mainNav">
-          {/* Links lado izquierdo */}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link to="/" className="btn btn-outline-light me-2">
@@ -40,7 +37,6 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Lado derecho */}
           <div className="d-flex align-items-center gap-2">
             {token ? (
               <>
@@ -60,7 +56,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Carrito */}
             <Link to="/cart" className="btn btn-success fw-bold">
               🛒 Total: ${formatCLP(total)}
             </Link>

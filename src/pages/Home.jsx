@@ -8,19 +8,23 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchPizzas = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/pizzas");
-        if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
+        const res = await fetch("http://localhost:5000/api/pizzas", {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setPizzas(data);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") setError(err.message);
       } finally {
         setLoading(false);
       }
     };
     fetchPizzas();
+    return () => controller.abort();
   }, []);
 
   if (loading) return <p className="text-center mt-5">Cargando pizzas...</p>;

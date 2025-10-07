@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import { formatCLP } from "../utils/format";
 
 const CardPizza = ({ id, name, price, ingredients, img }) => {
+  const { addToCart } = useCart();
+
   return (
     <div className="col">
       <div className="card h-100 shadow-sm">
@@ -23,7 +26,12 @@ const CardPizza = ({ id, name, price, ingredients, img }) => {
             <Link to={`/pizza/${id}`} className="btn btn-outline-primary">
               Ver más 👀
             </Link>
-            <button className="btn btn-primary">Añadir 🛒</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => addToCart({ id, name, price, img })}
+            >
+              Añadir 🛒
+            </button>
           </div>
         </div>
       </div>
