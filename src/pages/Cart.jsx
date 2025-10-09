@@ -7,14 +7,30 @@ const Cart = () => {
     useCart();
   const { token } = useUser();
 
+  const handleCheckout = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/checkouts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ cart }),
+      });
+      if (!res.ok) throw new Error("Error en la compra");
+      alert("✅ Compra realizada con éxito!");
+      clearCart();
+    } catch {
+      alert("❌ No se pudo procesar la compra");
+    }
+  };
+
   return (
     <div className="container py-5">
       <h2 className="mb-4 text-center">🛒 Tu carrito</h2>
 
       {cart.length === 0 ? (
-        <div className="text-center mt-5">
-          <p>No hay pizzas en el carrito.</p>
-        </div>
+        <p className="text-center mt-5">No hay pizzas en el carrito.</p>
       ) : (
         <>
           {cart.map((item) => (
@@ -22,7 +38,6 @@ const Cart = () => {
               key={item.id}
               className="d-flex align-items-center justify-content-between border rounded p-3 mb-3 shadow-sm"
             >
-              {/* Imagen */}
               <div className="d-flex align-items-center gap-3">
                 <img
                   src={item.img}
@@ -42,7 +57,6 @@ const Cart = () => {
                 </div>
               </div>
 
-              {/* Controles de cantidad */}
               <div className="d-flex align-items-center gap-2">
                 <button
                   className="btn btn-outline-secondary btn-sm"
@@ -59,7 +73,6 @@ const Cart = () => {
                 </button>
               </div>
 
-              {/* Subtotal */}
               <div className="text-end">
                 <p className="fw-bold mb-1">
                   Subtotal: ${formatCLP(item.price * item.count)}
@@ -74,14 +87,17 @@ const Cart = () => {
             </div>
           ))}
 
-          {/* Total general */}
           <div className="text-end mt-4">
             <h4>Total a pagar: ${formatCLP(total)}</h4>
             <div className="d-flex justify-content-end gap-2 mt-3">
               <button className="btn btn-outline-danger" onClick={clearCart}>
                 Vaciar carrito 🧹
               </button>
-              <button className="btn btn-success" disabled={!token}>
+              <button
+                className="btn btn-success"
+                onClick={handleCheckout}
+                disabled={!token}
+              >
                 Pagar 💳
               </button>
             </div>

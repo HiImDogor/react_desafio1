@@ -7,7 +7,6 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
 
-  // Calcular total automáticamente
   useEffect(() => {
     const newTotal = cart.reduce(
       (acc, item) => acc + item.price * item.count,
@@ -16,7 +15,6 @@ export const CartProvider = ({ children }) => {
     setTotal(newTotal);
   }, [cart]);
 
-  // Agregar producto (si existe, suma +1)
   const addToCart = (pizza) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === pizza.id);
@@ -24,23 +22,19 @@ export const CartProvider = ({ children }) => {
         return prev.map((item) =>
           item.id === pizza.id ? { ...item, count: item.count + 1 } : item
         );
-      } else {
-        return [...prev, { ...pizza, count: 1 }];
       }
+      return [...prev, { ...pizza, count: 1 }];
     });
   };
 
-  // Sumar cantidad
-  const increment = (id) => {
+  const increment = (id) =>
     setCart((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, count: item.count + 1 } : item
       )
     );
-  };
 
-  // Restar cantidad
-  const decrement = (id) => {
+  const decrement = (id) =>
     setCart((prev) =>
       prev
         .map((item) =>
@@ -48,14 +42,10 @@ export const CartProvider = ({ children }) => {
         )
         .filter((item) => item.count > 0)
     );
-  };
 
-  // Eliminar producto
-  const removeFromCart = (id) => {
+  const removeFromCart = (id) =>
     setCart((prev) => prev.filter((item) => item.id !== id));
-  };
 
-  // Vaciar carrito
   const clearCart = () => setCart([]);
 
   return (

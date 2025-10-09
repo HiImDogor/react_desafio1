@@ -5,7 +5,7 @@ import { formatCLP } from "../utils/format";
 
 const Navbar = () => {
   const { total } = useCart();
-  const { token, logout, login } = useUser();
+  const { token, logout } = useUser();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
@@ -19,9 +19,6 @@ const Navbar = () => {
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#mainNav"
-          aria-controls="mainNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -39,7 +36,7 @@ const Navbar = () => {
             {token ? (
               <>
                 <Link to="/profile" className="btn btn-outline-light">
-                  🔓 Profile
+                  👤 Perfil
                 </Link>
                 <button onClick={logout} className="btn btn-outline-light">
                   🔒 Logout
@@ -57,7 +54,7 @@ const Navbar = () => {
             )}
 
             <Link to="/cart" className="btn btn-success fw-bold">
-              🛒 Total: ${formatCLP(total)}
+              🛒 ${formatCLP(total)}
             </Link>
           </div>
         </div>
