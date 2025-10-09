@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useUser } from "../context/UserContext";
 import { formatCLP } from "../utils/format";
 
 const Navbar = () => {
   const { total } = useCart();
-  const token = false; // lo dejarás para Hito 5
+  const { token, logout, login } = useUser();
 
   return (
-    <nav
-      className="navbar navbar-expand-lg navbar-dark bg-dark w-100"
-      style={{ minHeight: "70px", padding: "0.5rem 1rem" }}
-    >
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
       <div className="container-fluid">
         <Link className="navbar-brand fw-bold fs-4" to="/">
           🍕 Pizzería Mamma Mía
@@ -43,7 +41,9 @@ const Navbar = () => {
                 <Link to="/profile" className="btn btn-outline-light">
                   🔓 Profile
                 </Link>
-                <button className="btn btn-outline-light">🔒 Logout</button>
+                <button onClick={logout} className="btn btn-outline-light">
+                  🔒 Logout
+                </button>
               </>
             ) : (
               <>

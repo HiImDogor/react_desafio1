@@ -1,48 +1,74 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-// 1️⃣ Crear el contexto
 const CartContext = createContext();
-
-// 2️⃣ Crear un hook para usar el contexto más fácil
 export const useCart = () => useContext(CartContext);
 
-// 3️⃣ Proveedor del contexto
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  // Agregar pizza al carrito
+  // Calcular total automáticamente
+  useEffect(() => {
+    const newTotal = cart.reduce(
+      (acc, item) => acc + item.price * item.count,
+      0
+    );
+    setTotal(newTotal);
+  }, [cart]);
+
+  // Agregar producto (si existe, suma +1)
   const addToCart = (pizza) => {
-    const existing = cart.find((item) => item.id === pizza.id);
-    if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.id === pizza.id ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      );
-    } else {
-      setCart([...cart, { ...pizza, quantity: 1 }]);
-    }
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === pizza.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === pizza.id ? { ...item, count: item.count + 1 } : item
+        );
+      } else {
+        return [...prev, { ...pizza, count: 1 }];
+      }
+    });
   };
 
-  // Eliminar una unidad
-  const removeFromCart = (id) => {
-    const updated = cart
-      .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+  // Sumar cantidad
+  const increment = (id) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, count: item.count + 1 } : item
       )
-      .filter((item) => item.quantity > 0);
-    setCart(updated);
+    );
   };
 
-  // Calcular total
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Restar cantidad
+  const decrement = (id) => {
+    setCart((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, count: item.count - 1 } : item
+        )
+        .filter((item) => item.count > 0)
+    );
+  };
+
+  // Eliminar producto
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
 
   // Vaciar carrito
   const clearCart = () => setCart([]);
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, total }}
+      value={{
+        cart,
+        total,
+        addToCart,
+        increment,
+        decrement,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
